@@ -1,4 +1,4 @@
-// Originally started by Izabella Palange Github: Fortuneye, further built on by Thomas Dalbavie Github: tdalbavie
+// Originally started by Izabella Palange Github: Fortuneye, further built on by Thomas Dalbavie Github: tdalbavie.
 package com.yourorganization.maven_sample;
 
 import com.github.javaparser.StaticJavaParser;
