@@ -5,11 +5,17 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.resolution.types.ResolvedType;
 import com.github.javaparser.ast.type.ReferenceType;
+import com.github.javaparser.ast.type.ArrayType;
+import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -17,7 +23,7 @@ import java.util.regex.Pattern;
 public class VariableVisitor extends VoidVisitorAdapter<Void> {
 	
     AtomicInteger primitiveTypeCount = new AtomicInteger();
-    AtomicInteger compsositeTypeCount = new AtomicInteger();
+    AtomicInteger compositeTypeCount = new AtomicInteger();
     
     // Will be used to further break down composite types.
     AtomicInteger enumCount = new AtomicInteger();
@@ -40,50 +46,37 @@ public class VariableVisitor extends VoidVisitorAdapter<Void> {
     public void visit(VariableDeclarator declarator, Void arg) {
         //System.out.println(declarator.getType());
     	
-    	if(declarator.getParentNode().isPresent())
-    	{
-    		if(declarator.getParentNode().get() instanceof FieldDeclaration)
-    		{
-    			FieldDeclaration fd = (FieldDeclaration) declarator.getParentNode().get();
-    			if(fd.isFinal())
-    			{
-    				Expression initializer = declarator.getInitializer().orElse(null);
-    				if (initializer != null && initializer instanceof LiteralExpr) 
-    				{
-                        if (initializer != null && initializer instanceof LiteralExpr) 
-                        {
-                            String name = declarator.getNameAsString();
-                            Number value = parseNumber(((LiteralExpr) initializer).toString());
-                            if(value != null)
-                            	finalIntegerLiterals.put(name, value);
-                        }
-    				}
-    			}
-    		}
-    		else if(declarator.getParentNode().get() instanceof MethodDeclaration)
-    		{
-    			MethodDeclaration md = (MethodDeclaration) declarator.getParentNode().get();
-    			if(md.isFinal())
-    			{
-    				Expression initializer = declarator.getInitializer().orElse(null);
-    				if (initializer != null && initializer instanceof LiteralExpr) 
-    				{
-                        if (initializer != null && initializer instanceof LiteralExpr) 
-                        {
-                            String name = declarator.getNameAsString();
-                            Number value = parseNumber(((LiteralExpr) initializer).toString());
-                            if(value != null)
-                            	finalIntegerLiterals.put(name, value);
-                        }
-    				}
-    			}
-    		}
-    	}
+        // Check if the parent node is a FieldDeclaration or VariableDeclarationExpr
+        declarator.getParentNode().ifPresent(parentNode -> {
+            boolean isFinal = false;
+
+            if (parentNode instanceof FieldDeclaration) {
+                // Check if it's a final field
+                isFinal = ((FieldDeclaration) parentNode).isFinal();
+            } else if (parentNode instanceof VariableDeclarationExpr) {
+                // Check if it's a final local variable
+                isFinal = ((VariableDeclarationExpr) parentNode).isFinal();
+            }
+
+            // Process final variables
+            if (isFinal) {
+                Expression initializer = declarator.getInitializer().orElse(null);
+                if (initializer instanceof LiteralExpr) {
+                    String name = declarator.getNameAsString();
+                    Number value = parseNumber(((LiteralExpr) initializer).toString());
+                    if (value != null) {
+                        finalIntegerLiterals.put(name, value);
+                    }
+                }
+            }
+        });
     	
+        
         if(declarator.getType().isPrimitiveType()){
             primitiveTypeCount.getAndIncrement();
+            String type = declarator.getType().asString();
             
-            switch (declarator.getType().asString()) {
+            switch (type) {
                 case "boolean":
                     booleanCount.getAndIncrement();
                     break;
@@ -116,29 +109,92 @@ public class VariableVisitor extends VoidVisitorAdapter<Void> {
                     floatCount.getAndIncrement();
                     break;
             }
-        }else{
-            compsositeTypeCount.getAndIncrement();
-            //System.out.println(declarator.getType().asString());
+        }
+        
+        else
+        {
+            if(declarator.getType().isArrayType()) {
+                ArrayType arrayType = declarator.getType().asArrayType();
+                Type componentType = arrayType.getComponentType();
+                
+                // Deals with primitive arrays.
+                if (componentType.isPrimitiveType()) {
+                	primitiveTypeCount.getAndIncrement();
+                	String type = componentType.asString();
+                    switch (type) {
+                    case "boolean":
+                        booleanCount.getAndIncrement();
+                        break;
+
+                    case "byte":
+                        byteCount.getAndIncrement();
+                        break;
+
+                    case "short":
+                        shortCount.getAndIncrement();
+                        break;
+
+                    case "char":
+                        charCount.getAndIncrement();
+                        break;
+
+                    case "int":
+                        intCount.getAndIncrement();
+                        break;
+
+                    case "long":
+                        longCount.getAndIncrement();
+
+                        break;
+                    case "double":
+                        doubleCount.getAndIncrement();
+                        break;
+
+                    case "float":
+                        floatCount.getAndIncrement();
+                        break;
+                    }
+                    return;
+                }
+            }
             
-            // New switch structure to search for enums, JRE types, and homemade types.
-            if(declarator.getType().asString().contains("Enumeration"))
-            	enumCount.getAndIncrement();
-            else if(isJREClass(declarator.getType().asString(), CodeAnalysis.jreTypeList) && !isJREClass(declarator.getType().asString(), CodeAnalysis.userDefinedTypeNames))
-            	JRECount.getAndIncrement();
-            else 
-            	homemadeCount.getAndIncrement();
+        	try
+        	{
+	            compositeTypeCount.getAndIncrement();
+	            //System.out.println(declarator.getType().asString());
+	            
+	            ResolvedType resolvedType = declarator.getType().resolve();
+	
+	            if (resolvedType.isReferenceType()) {
+	                ResolvedReferenceTypeDeclaration typeDeclaration = resolvedType.asReferenceType().getTypeDeclaration().get();
+	
+	                if (typeDeclaration.isEnum()) {
+	                    enumCount.getAndIncrement();
+	                } else if (isJREClass(typeDeclaration.getQualifiedName(), CodeAnalysis.jreTypeList) && 
+	                           !isJREClass(typeDeclaration.getQualifiedName(), CodeAnalysis.userDefinedTypeNames)) {
+	                    JRECount.getAndIncrement();
+	                } else {
+	                    homemadeCount.getAndIncrement();
+	                }
+	            }
+        	}
+        	// In case it fails it will still try to count JRE or homemade classes, try block is purely for enum counting.
+        	catch (Exception e)
+        	{
+                if(isJREClass(declarator.getType().asString(), CodeAnalysis.jreTypeList) && !isJREClass(declarator.getType().asString(), CodeAnalysis.userDefinedTypeNames))
+                	JRECount.getAndIncrement();
+                else 
+                	homemadeCount.getAndIncrement();
+        	}
         }
 
     }
     
     private static boolean isJREClass(String className, HashSet<String> uniqueClassNames) {
-        for (String name : uniqueClassNames) {
-            // Use a regular expression to perform a flexible match
-            if (Pattern.compile(Pattern.quote(name), Pattern.CASE_INSENSITIVE).matcher(className).find()) {
-                return true;
-            }
-        }
-        return false;
+        // Remove generic type parameters and array notations.
+    	String baseClassName = className.replaceAll("<.*>", "").replaceAll("\\[.*\\]", "");
+
+        return uniqueClassNames.contains(baseClassName);
     }
     
     private static Number parseNumber(String value) {

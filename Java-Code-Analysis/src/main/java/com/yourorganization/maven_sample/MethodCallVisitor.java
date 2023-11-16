@@ -26,17 +26,21 @@ public class MethodCallVisitor extends VoidVisitorAdapter<Void> {
         //recursively traverse the AST
         super.visit(call, arg);
 
-        //if the method doesn't have a scope
-        if (!call.getScope().isPresent()) {
-            // This is a method call without a scope
-            return;
-        }
+        // Find the method in which this call is made
+        Optional<MethodDeclaration> currentMethod = call.findAncestor(MethodDeclaration.class);
+        
+        if (currentMethod.isEmpty())
+        	return;
+        
         String methodName = call.getNameAsString();
         for (MethodDeclaration visitedMethod : visitedMethods) {
-            if (visitedMethod.getNameAsString().equals(methodName) && visitedMethod != call.findAncestor(MethodDeclaration.class).get()) {
+        	// if (visitedMethod.getNameAsString().equals(methodName) && visitedMethod != call.findAncestor(MethodDeclaration.class).get())
+            if (visitedMethod.getNameAsString().equals(methodName)) {
                 // This is a recursive method call
-                recursiveCount++;
-                return;
+            	if (visitedMethod.equals(currentMethod.get())) {
+                    recursiveCount++;
+                    return;
+                }
             }
         }
         nonRecursiveCount++;

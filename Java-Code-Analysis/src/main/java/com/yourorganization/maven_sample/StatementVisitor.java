@@ -26,6 +26,12 @@ public class StatementVisitor extends VoidVisitorAdapter<Void>{
 	}
 	
 	@Override
+	public void visit(DoStmt ws, Void arg)
+	{
+		whileCount.getAndIncrement();
+	}
+	
+	@Override
 	public void visit(ForStmt fs, Void arg)
 	{
 		forCount.getAndIncrement();

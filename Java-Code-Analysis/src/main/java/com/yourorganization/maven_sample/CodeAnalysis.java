@@ -641,7 +641,7 @@ public class CodeAnalysis {
                 // Count the number of lines in each constructor
                 for (ConstructorDeclaration constructor : cu.findAll(ConstructorDeclaration.class)) {
                     numConstructors++;
-                    numConstructorsLines += constructor.getEnd().get().line - constructor.getBegin().get().line + 1;
+                    numConstructorsLines += countLines(constructor.getBody().toString()) - 2;
                 }
 
                 // Print the results
@@ -814,7 +814,7 @@ public class CodeAnalysis {
                 cu.accept(visitor, null);
 
                 globalPrimitiveTypeCount += visitor.primitiveTypeCount.get();
-                globalCompositeTypeCount += visitor.compsositeTypeCount.get();
+                globalCompositeTypeCount += visitor.compositeTypeCount.get();
                 globalEnumerationCount += visitor.enumCount.get();
                 globalJRECount += visitor.JRECount.get();
                 globalHomemadeCount += visitor.homemadeCount.get();
@@ -826,7 +826,10 @@ public class CodeAnalysis {
                 globalFloatCount += visitor.floatCount.get();
                 globalDoubleCount += visitor.doubleCount.get();
                 globalIntCount += visitor.intCount.get();
-                globalFinalIntegerLiterals = visitor.finalIntegerLiterals;
+                for(Map.Entry<String, Number> entry : visitor.finalIntegerLiterals.entrySet())
+                {
+                	globalFinalIntegerLiterals.put(entry.getKey(), entry.getValue());
+                }
 
                 /*System.out.println("Number of primitive types: " + visitor.primitiveTypeCount);
                 System.out.println("Number of composite types: " + visitor.compsositeTypeCount);
@@ -962,7 +965,7 @@ public class CodeAnalysis {
     public static void main(String[] args) throws Exception {
     	
     	// Initializes the full list of JRE data type names.
-        String filename = "C:/Users/tdalbavie/git/Java-Code-Analysis/jreTypeList.txt";
+        String filename = "C:\\Users\\tdalbavie\\git\\JavaCodeAnalysis\\Java-Code-Analysis\\jreTypeList.txt";
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -977,10 +980,11 @@ public class CodeAnalysis {
         
         int caughtErrors = 0;
         //File newDir = new File("C:\\Users\\choco\\OneDrive - University at Albany - SUNY\\CLASSES\\SOPHOMORE\\SPRING 2021\\ICSI213 - Data St\\PROJECTS\\Project 4\\PROJ4");
-        //5377
-        for(int i = 0; i < 5379; i++) {
-            String directory = "C:\\Users\\tdalbavie\\Documents\\Source Code\\REPOS\\" + i + "\\";
-            //"C:\\Users\\tdalbavie\\Documents\\Source Code\\REPOS"
+        //5379
+        for(int i = 0; i < 1; i++) {
+            String directory = "C:\\Users\\tdalbavie\\eclipse-workspace\\Java-Code-Analysis-Test\\";
+            //"C:\\Users\\tdalbavie\\Documents\\Source Code\\REPOS\\" + i + "\\"
+            //"C:\\Users\\tdalbavie\\eclipse-workspace\\Java-Code-Analysis-Test\\"
             //File newDir = new File("C:\\Users\\choco\\OneDrive - University at Albany - SUNY\\CLASSES\\SOPHOMORE\\SPRING 2021\\ICSI213 - Data St\\PROJECTS\\Project 2\\PROJECT 2");
             File newDir = new File(directory);
             try {
@@ -998,7 +1002,9 @@ public class CodeAnalysis {
                 exceptionCaughtCount(newDir);
                 javaLineCount(newDir);
                 System.out.println(i);
+                globalFinalIntegerLiterals = new HashMap<String, Number>(); // Clears the HashMap after the program.
             }catch(Exception e){
+            	e.printStackTrace();
                 System.out.println("CAUGHT");
                 caughtErrors++;
                 continue;
