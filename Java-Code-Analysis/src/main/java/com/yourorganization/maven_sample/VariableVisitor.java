@@ -163,6 +163,7 @@ public class VariableVisitor extends VoidVisitorAdapter<Void> {
 	            compositeTypeCount.getAndIncrement();
 	            //System.out.println(declarator.getType().asString());
 	            
+
 	            ResolvedType resolvedType = declarator.getType().resolve();
 	
 	            if (resolvedType.isReferenceType()) {
@@ -206,8 +207,7 @@ public class VariableVisitor extends VoidVisitorAdapter<Void> {
             }
         } catch (NumberFormatException e) {
             // Handle parsing errors here (e.g., non-numeric literals)
-            return null; // You might want to return a special value or handle this differently
+            return null;
         }
     }
-
 }

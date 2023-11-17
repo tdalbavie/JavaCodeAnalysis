@@ -384,31 +384,30 @@ public class CodeAnalysis {
                 md.getBody().ifPresent(body -> body.findAll(ThrowStmt.class).forEach(stmt -> {
                     Expression expr = stmt.getExpression();
                     if (expr instanceof ObjectCreationExpr) {
-                        //String exceptionName = ((ObjectCreationExpr) expr).getType().getNameAsString();
                         ObjectCreationExpr objExpr = (ObjectCreationExpr) expr;
-                        ResolvedType exceptionType = null;
-                        boolean escapeTryCatch = false;
                         try {
-                            exceptionType = objExpr.getType().resolve();
-                            escapeTryCatch = true;
-                        } catch (UnsolvedSymbolException e) {
-                            customExceptionsThrown.getAndIncrement();
-                        }
-                        if (escapeTryCatch) {
+                            ResolvedType exceptionType = objExpr.getType().resolve();
                             String fullyQualifiedName = exceptionType.asReferenceType().getQualifiedName();
+                            
                             if (fullyQualifiedName.startsWith("java.")) {
                                 jreExceptionsThrown.getAndIncrement();
                             } else if (fullyQualifiedName.contains(".")) {
                                 customExceptionsThrown.getAndIncrement();
-                            }else if (jreExceptionList.contains(fullyQualifiedName)){
+                            } else {
+                                genericExceptionsThrown.getAndIncrement();
+                            }
+                        } catch (UnsolvedSymbolException e) {
+                            // Additional checks before concluding it's a custom exception
+                            String exceptionName = objExpr.getType().asString();
+                            if (jreExceptionList.contains(exceptionName)) {
                                 jreExceptionsThrown.getAndIncrement();
-                            } else if (!fullyQualifiedName.equals("Exception") && !fullyQualifiedName.equals("Error")) {
+                            } else if (!exceptionName.equals("Exception") && !exceptionName.equals("Error")) {
                                 customExceptionsThrown.getAndIncrement();
                             } else {
                                 genericExceptionsThrown.getAndIncrement();
                             }
                         }
-                    }else {
+                    } else {
                         genericExceptionsThrown.getAndIncrement();
                     }
                 }));
@@ -981,35 +980,44 @@ public class CodeAnalysis {
         int caughtErrors = 0;
         //File newDir = new File("C:\\Users\\choco\\OneDrive - University at Albany - SUNY\\CLASSES\\SOPHOMORE\\SPRING 2021\\ICSI213 - Data St\\PROJECTS\\Project 4\\PROJ4");
         //5379
-        for(int i = 0; i < 1; i++) {
-            String directory = "C:\\Users\\tdalbavie\\eclipse-workspace\\Java-Code-Analysis-Test\\";
-            //"C:\\Users\\tdalbavie\\Documents\\Source Code\\REPOS\\" + i + "\\"
-            //"C:\\Users\\tdalbavie\\eclipse-workspace\\Java-Code-Analysis-Test\\"
-            //File newDir = new File("C:\\Users\\choco\\OneDrive - University at Albany - SUNY\\CLASSES\\SOPHOMORE\\SPRING 2021\\ICSI213 - Data St\\PROJECTS\\Project 2\\PROJECT 2");
-            File newDir = new File(directory);
-            try {
-            	inheritanceCount(newDir);
-            	variableTypeCount(newDir);
-                variableStatementCount(newDir);
-                constantCount(newDir);
-                methodCount(newDir);
-                parameterCount(newDir);
-                methodLineCount(newDir);
-                memberCount(newDir);
-                memberPermissionCount(newDir);
-                methodCallCount(newDir);
-                exceptionThrownCount(newDir);
-                exceptionCaughtCount(newDir);
-                javaLineCount(newDir);
-                System.out.println(i);
-                globalFinalIntegerLiterals = new HashMap<String, Number>(); // Clears the HashMap after the program.
-            }catch(Exception e){
-            	e.printStackTrace();
-                System.out.println("CAUGHT");
+        //JavaParser cannot handle 4217 and 5070 so it is skipped, this project causes infinite recursion in JavaParser itself.
+        for(int i = 0; i < 5379; i++) {
+        	if (i != 4217 && i != 5070) {
+	            String directory = "C:\\Users\\tdalbavie\\Documents\\Source Code\\REPOS\\" + i + "\\";
+	            //"C:\\Users\\tdalbavie\\Documents\\Source Code\\REPOS\\" + i + "\\"
+	            //"C:\\Users\\tdalbavie\\git\\JavaCodeAnalysisTestProgram\\"
+	            //File newDir = new File("C:\\Users\\choco\\OneDrive - University at Albany - SUNY\\CLASSES\\SOPHOMORE\\SPRING 2021\\ICSI213 - Data St\\PROJECTS\\Project 2\\PROJECT 2");
+	            File newDir = new File(directory);
+	            try {
+	            	inheritanceCount(newDir);
+	            	variableTypeCount(newDir);
+	                variableStatementCount(newDir);
+	                constantCount(newDir);
+	                methodCount(newDir);
+	                parameterCount(newDir);
+	                methodLineCount(newDir);
+	                memberCount(newDir);
+	                memberPermissionCount(newDir);
+	                methodCallCount(newDir);
+	                exceptionThrownCount(newDir);
+	                exceptionCaughtCount(newDir);
+	                javaLineCount(newDir);
+	                System.out.println(i);
+	                globalFinalIntegerLiterals = new HashMap<String, Number>(); // Clears the HashMap after the program.
+	            }catch(Exception e){
+	            	e.printStackTrace();
+	                System.out.println("CAUGHT(" + i + ")");
+	                caughtErrors++;
+	                continue;
+	            }
+        	}
+        	// Counts 4217 as an error.
+        	else
+        	{
+        		System.out.println("CAUGHT(" + i + ")");
                 caughtErrors++;
                 continue;
-            }
-
+        	}
         }
 
         /*variableTypeCount(newDir);
