@@ -1,6 +1,7 @@
 package com.yourorganization.maven_sample;
 
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
@@ -11,6 +12,7 @@ public class IntegerLiteralVisitor extends VoidVisitorAdapter<Void> {
 	
 	AtomicInteger countConstants = new AtomicInteger();
 	AtomicInteger countConstantsInRange = new AtomicInteger();
+	AtomicInteger countConstantsInDeclarations = new AtomicInteger();
 	
 	@Override
 	public void visit(IntegerLiteralExpr ile, Void arg) 
@@ -34,6 +36,16 @@ public class IntegerLiteralVisitor extends VoidVisitorAdapter<Void> {
 			countConstants.getAndIncrement();
 		}
 	}
+	
+    @Override
+    public void visit(VariableDeclarator vd, Void arg) {
+        super.visit(vd, arg);
+        Expression initializer = vd.getInitializer().orElse(null);
+        if (initializer instanceof IntegerLiteralExpr || (initializer instanceof NameExpr && 
+            CodeAnalysis.globalFinalIntegerLiterals.containsKey(((NameExpr) initializer).getNameAsString()))) {
+            countConstantsInDeclarations.getAndIncrement();
+        }
+    }
 	
     private boolean isWithinRange(Number number) 
     {

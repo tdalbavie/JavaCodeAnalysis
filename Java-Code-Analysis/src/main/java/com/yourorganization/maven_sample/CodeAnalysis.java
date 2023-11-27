@@ -559,9 +559,6 @@ public class CodeAnalysis {
         }).explore(pathDir);
     }
 
-    static int numFieldsMember = 0;
-    static int numMethodsMember = 0;
-
     /*
      * Raw counts and distributions of number of parameters a method requires
      * */
@@ -583,7 +580,7 @@ public class CodeAnalysis {
                 /*System.out.println("Number of fields: " + numFieldsMember);
                 System.out.println("Number of methods: " + numMethodsMember);
                 System.out.println("Total number of members: " + (numFieldsMember + numMethodsMember));*/
-
+    	
         }).explore(pathDir);
     }
 
@@ -593,6 +590,66 @@ public class CodeAnalysis {
     static int numConstructorsLines = 0;
     static int numStaticMethodsLines = 0;
     static int numInstanceMethodsLines = 0;
+    
+    static int accessorsLinesZero = 0;
+    static int accessorsLinesOne = 0;
+    static int accessorsLinesTwo = 0;
+    static int accessorsLinesThree = 0;
+    static int accessorsLinesFour = 0;
+    static int accessorsLinesFive = 0;
+    static int accessorsLinesSix = 0;
+    static int accessorsLinesSeven = 0;
+    static int accessorsLinesEight = 0;
+    static int accessorsLinesNine = 0;
+    static int accessorsLinesTenOrMore = 0;
+    
+    static int mutatorsLinesZero = 0;
+    static int mutatorsLinesOne = 0;
+    static int mutatorsLinesTwo = 0;
+    static int mutatorsLinesThree = 0;
+    static int mutatorsLinesFour = 0;
+    static int mutatorsLinesFive = 0;
+    static int mutatorsLinesSix = 0;
+    static int mutatorsLinesSeven = 0;
+    static int mutatorsLinesEight = 0;
+    static int mutatorsLinesNine = 0;
+    static int mutatorsLinesTenOrMore = 0;
+    
+    static int constructorsLinesZero = 0;
+    static int constructorsLinesOne = 0;
+    static int constructorsLinesTwo = 0;
+    static int constructorsLinesThree = 0;
+    static int constructorsLinesFour = 0;
+    static int constructorsLinesFive = 0;
+    static int constructorsLinesSix = 0;
+    static int constructorsLinesSeven = 0;
+    static int constructorsLinesEight = 0;
+    static int constructorsLinesNine = 0;
+    static int constructorsLinesTenOrMore = 0;
+    
+    static int staticMethodsLinesZero = 0;
+    static int staticMethodsLinesOne = 0;
+    static int staticMethodsLinesTwo = 0;
+    static int staticMethodsLinesThree = 0;
+    static int staticMethodsLinesFour = 0;
+    static int staticMethodsLinesFive = 0;
+    static int staticMethodsLinesSix = 0;
+    static int staticMethodsLinesSeven = 0;
+    static int staticMethodsLinesEight = 0;
+    static int staticMethodsLinesNine = 0;
+    static int staticMethodsLinesTenOrMore = 0;
+    
+    static int instanceMethodsLinesZero = 0;
+    static int instanceMethodsLinesOne = 0;
+    static int instanceMethodsLinesTwo = 0;
+    static int instanceMethodsLinesThree = 0;
+    static int instanceMethodsLinesFour = 0;
+    static int instanceMethodsLinesFive = 0;
+    static int instanceMethodsLinesSix = 0;
+    static int instanceMethodsLinesSeven = 0;
+    static int instanceMethodsLinesEight = 0;
+    static int instanceMethodsLinesNine = 0;
+    static int instanceMethodsLinesTenOrMore = 0;
 
     static int numAccessors = 0;
     static int numMutators = 0;
@@ -608,7 +665,9 @@ public class CodeAnalysis {
             //System.out.println("\n" + path);
 
                 CompilationUnit cu = StaticJavaParser.parse(file);
-
+                
+                boolean emptyMutator = false;
+                
                 for (MethodDeclaration md : cu.findAll(MethodDeclaration.class)) {
 
                     // Check if the method is an accessor or mutator method
@@ -624,23 +683,153 @@ public class CodeAnalysis {
 
                     if (isAccessor) {
                         numAccessors++;
+                        
+                        if (method == 0)
+                        	accessorsLinesZero++;
+                        else if (method == 1)
+                        	accessorsLinesOne++;
+                        else if (method == 2)
+                        	accessorsLinesTwo++;
+                        else if (method == 3)
+                        	accessorsLinesThree++;
+                        else if (method == 4)
+                        	accessorsLinesFour++;
+                        else if (method == 5)
+                        	accessorsLinesFive++;
+                        else if (method == 6)
+                        	accessorsLinesSix++;
+                        else if (method == 7)
+                        	accessorsLinesSeven++;
+                        else if (method == 8)
+                        	accessorsLinesEight++;
+                        else if (method == 9)
+                        	accessorsLinesNine++;
+                        else if (method >= 10)
+                        	accessorsLinesTenOrMore++;
+                        
                         numAccessorsLines += method;
                     } else if (isMutator) {
                         numMutators++;
+                        
+                        if (method == 0)
+                        {
+                        	mutatorsLinesZero++;
+                        	System.out.print(" " + methodName);
+                        	emptyMutator = true;
+                        }
+                        else if (method == 1)
+                        	mutatorsLinesOne++;
+                        else if (method == 2)
+                        	mutatorsLinesTwo++;
+                        else if (method == 3)
+                        	mutatorsLinesThree++;
+                        else if (method == 4)
+                        	mutatorsLinesFour++;
+                        else if (method == 5)
+                        	mutatorsLinesFive++;
+                        else if (method == 6)
+                        	mutatorsLinesSix++;
+                        else if (method == 7)
+                        	mutatorsLinesSeven++;
+                        else if (method == 8)
+                        	mutatorsLinesEight++;
+                        else if (method == 9)
+                        	mutatorsLinesNine++;
+                        else if (method >= 10)
+                        	mutatorsLinesTenOrMore++;
+                        
                         numMutatorsLines += method;
                     } else if (md.isStatic()) {
                         numStaticMethods++;
+                        
+                        if (method == 0)
+                        	staticMethodsLinesZero++;
+                        else if (method == 1)
+                        	staticMethodsLinesOne++;
+                        else if (method == 2)
+                        	staticMethodsLinesTwo++;
+                        else if (method == 3)
+                        	staticMethodsLinesThree++;
+                        else if (method == 4)
+                        	staticMethodsLinesFour++;
+                        else if (method == 5)
+                        	staticMethodsLinesFive++;
+                        else if (method == 6)
+                        	staticMethodsLinesSix++;
+                        else if (method == 7)
+                        	staticMethodsLinesSeven++;
+                        else if (method == 8)
+                        	staticMethodsLinesEight++;
+                        else if (method == 9)
+                        	staticMethodsLinesNine++;
+                        else if (method >= 10)
+                        	staticMethodsLinesTenOrMore++;
+                        
                         numStaticMethodsLines += method;
                     } else {
                         numInstanceMethods++;
+                        
+                        if (method == 0)
+                        	instanceMethodsLinesZero++;
+                        else if (method == 1)
+                        	instanceMethodsLinesOne++;
+                        else if (method == 2)
+                        	instanceMethodsLinesTwo++;
+                        else if (method == 3)
+                        	instanceMethodsLinesThree++;
+                        else if (method == 4)
+                        	instanceMethodsLinesFour++;
+                        else if (method == 5)
+                        	instanceMethodsLinesFive++;
+                        else if (method == 6)
+                        	instanceMethodsLinesSix++;
+                        else if (method == 7)
+                        	instanceMethodsLinesSeven++;
+                        else if (method == 8)
+                        	instanceMethodsLinesEight++;
+                        else if (method == 9)
+                        	instanceMethodsLinesNine++;
+                        else if (method >= 10)
+                        	instanceMethodsLinesTenOrMore++;
+                        
                         numInstanceMethodsLines += method;
                     }
+                }
+                
+                if (emptyMutator)
+                {
+                	System.out.println();
                 }
 
                 // Count the number of lines in each constructor
                 for (ConstructorDeclaration constructor : cu.findAll(ConstructorDeclaration.class)) {
                     numConstructors++;
-                    numConstructorsLines += countLines(constructor.getBody().toString()) - 2;
+                    int method = countLines(constructor.getBody().toString()) - 2;
+                    
+                    if (method == 0)
+                    	constructorsLinesZero++;
+                    else if (method == 1)
+                    	constructorsLinesOne++;
+                    else if (method == 2)
+                    	constructorsLinesTwo++;
+                    else if (method == 3)
+                    	constructorsLinesThree++;
+                    else if (method == 4)
+                    	constructorsLinesFour++;
+                    else if (method == 5)
+                    	constructorsLinesFive++;
+                    else if (method == 6)
+                    	constructorsLinesSix++;
+                    else if (method == 7)
+                    	constructorsLinesSeven++;
+                    else if (method == 8)
+                    	constructorsLinesEight++;
+                    else if (method == 9)
+                    	constructorsLinesNine++;
+                    else if (method >= 10)
+                    	constructorsLinesTenOrMore++;
+                    
+                    numConstructorsLines += method;
                 }
 
                 // Print the results
@@ -674,7 +863,8 @@ public class CodeAnalysis {
     static int methodsEight = 0;
     static int methodsNine = 0;
     static int methodsTenOrMore = 0;
-
+    static int methodsHundredOrMore = 0;
+    static int numMethodsMember = 0;
 
 
     /*
@@ -694,27 +884,117 @@ public class CodeAnalysis {
                         //System.out.println("Number of methods: " + classDecl.getMethods().size());
                         if (classDecl.getMethods().isEmpty()) {
                             methodsZero++;
-                        } else if (classDecl.getMethods().size() == 1) {
+                            numMethodsMember++;
+                        } else if (numMethds == 1) {
                             methodsOne++;
-                        } else if (classDecl.getMethods().size() == 2) {
+                            numMethodsMember++;
+                        } else if (numMethds == 2) {
                             methodsTwo++;
-                        } else if (classDecl.getMethods().size() == 3) {
+                            numMethodsMember++;
+                        } else if (numMethds == 3) {
                             methodsThree++;
-                        } else if (classDecl.getMethods().size() == 4) {
+                            numMethodsMember++;
+                        } else if (numMethds == 4) {
                             methodsFour++;
-                        } else if (classDecl.getMethods().size() == 5) {
+                            numMethodsMember++;
+                        } else if (numMethds == 5) {
                             methodsFive++;
-                        } else if (classDecl.getMethods().size() == 6) {
+                            numMethodsMember++;
+                        } else if (numMethds == 6) {
                             methodsSix++;
-                        } else if (classDecl.getMethods().size() == 7) {
+                            numMethodsMember++;
+                        } else if (numMethds == 7) {
                             methodsSeven++;
-                        } else if (classDecl.getMethods().size() == 8) {
+                            numMethodsMember++;
+                        } else if (numMethds == 8) {
                             methodsEight++;
-                        } else if (classDecl.getMethods().size() == 9) {
+                            numMethodsMember++;
+                        } else if (numMethds == 9) {
                             methodsNine++;
-                        } else if (classDecl.getMethods().size() >= 10) {
+                            numMethodsMember++;
+                        } else if (numMethds >= 10) {
                             methodsTenOrMore++;
+                            numMethodsMember++;
                         }
+                        
+                        if (numMethds >= 100) {
+                            methodsHundredOrMore++;
+                        }
+                        
+                        if (numMethds >= 1000)
+                        	System.out.println("Methods: " + numMethds);
+                        
+                    }
+                }
+        }).explore(pathDir);
+    }
+    
+    static int fieldsZero = 0;
+    static int fieldsOne = 0;
+    static int fieldsTwo = 0;
+    static int fieldsThree = 0;
+    static int fieldsFour = 0;
+    static int fieldsFive = 0;
+    static int fieldsSix = 0;
+    static int fieldsSeven = 0;
+    static int fieldsEight = 0;
+    static int fieldsNine = 0;
+    static int fieldsTenOrMore = 0;
+    static int fieldsHundredOrMore = 0;
+    static int numFieldsMember = 0;
+    
+    public static void fieldCount (File pathDir) throws Exception {
+        new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
+            //System.out.println("\n" + path);
+
+                CompilationUnit cu = StaticJavaParser.parse(file);
+
+                for (ClassOrInterfaceDeclaration classDecl : cu.findAll(ClassOrInterfaceDeclaration.class)) {
+                    if (!classDecl.isInterface()) {
+                        int numFields = classDecl.getFields().size();
+
+                        //System.out.println("Number of methods: " + classDecl.getMethods().size());
+                        if (classDecl.getFields().isEmpty()) {
+                        	fieldsZero++;
+                        	numFieldsMember++;
+                        } else if (numFields == 1) {
+                        	fieldsOne++;
+                        	numFieldsMember++;
+                        } else if (numFields == 2) {
+                        	fieldsTwo++;
+                        	numFieldsMember++;
+                        } else if (numFields == 3) {
+                        	fieldsThree++;
+                        	numFieldsMember++;
+                        } else if (numFields == 4) {
+                        	fieldsFour++;
+                        	numFieldsMember++;
+                        } else if (numFields == 5) {
+                        	fieldsFive++;
+                        	numFieldsMember++;
+                        } else if (numFields == 6) {
+                        	fieldsSix++;
+                        	numFieldsMember++;
+                        } else if (numFields == 7) {
+                        	fieldsSeven++;
+                        	numFieldsMember++;
+                        } else if (numFields == 8) {
+                        	fieldsEight++;
+                        	numFieldsMember++;
+                        } else if (numFields == 9) {
+                        	fieldsNine++;
+                        	numFieldsMember++;
+                        } else if (numFields >= 10) {
+                        	fieldsTenOrMore++;
+                        	numFieldsMember++;
+                        }
+                        
+                        if (numFields >= 100) {
+                        	fieldsHundredOrMore++;
+                        }
+                        
+                        if (numFields >= 1000)
+                        	System.out.println("Fields: " + numFields);
 
                     }
                 }
@@ -890,6 +1170,7 @@ public class CodeAnalysis {
     
     static int globalConstantCount = 0;
     static int globalConstantCountInRange = 0;
+    static int globalConstantCountInDeclaration = 0;
     
     public static void constantCount(File pathDir) throws Exception {
         new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
@@ -902,6 +1183,7 @@ public class CodeAnalysis {
 
                 globalConstantCount += visitor.countConstants.get();
                 globalConstantCountInRange += visitor.countConstantsInRange.get();
+                globalConstantCountInDeclaration += visitor.countConstantsInDeclarations.get();
 
                 /*System.out.println("Number of constants: " + visitor.countConstants);
                 System.out.println("Number of constants in range of +/-32: " + visitor.countConstantsInRange);*/
@@ -994,9 +1276,9 @@ public class CodeAnalysis {
 	                variableStatementCount(newDir);
 	                constantCount(newDir);
 	                methodCount(newDir);
+	                fieldCount(newDir);
 	                parameterCount(newDir);
 	                methodLineCount(newDir);
-	                memberCount(newDir);
 	                memberPermissionCount(newDir);
 	                methodCallCount(newDir);
 	                exceptionThrownCount(newDir);
@@ -1005,7 +1287,7 @@ public class CodeAnalysis {
 	                System.out.println(i);
 	                globalFinalIntegerLiterals = new HashMap<String, Number>(); // Clears the HashMap after the program.
 	            }catch(Exception e){
-	            	e.printStackTrace();
+	            	//e.printStackTrace();
 	                System.out.println("CAUGHT(" + i + ")");
 	                caughtErrors++;
 	                continue;
@@ -1059,6 +1341,10 @@ public class CodeAnalysis {
         System.out.println("\nCONSTANT NUMBER TOTALS:");
         System.out.println("Number of constants: " + globalConstantCount);
         System.out.println("Number of constants in range of +/-32: " + globalConstantCountInRange);
+        System.out.println("Number of constants out of range of +/-32: " + (globalConstantCount - globalConstantCountInRange));
+        System.out.println("Number of constants used in declaration: " + globalConstantCountInDeclaration);
+        System.out.println("Number of constants not used in declaration: " + (globalConstantCount - globalConstantCountInDeclaration));
+        
 
         System.out.println("\nPARAMETER NUMBER TOTALS:");
         System.out.println("Number of methods with 0 parameters: " + paramsZero);
@@ -1083,9 +1369,24 @@ public class CodeAnalysis {
         System.out.println("Number of classes with 8 methods: " + methodsEight);
         System.out.println("Number of classes with 9 methods: " + methodsNine);
         System.out.println("Number of classes with 10+ methods: " + methodsTenOrMore);
+        System.out.println("Number of classes with 100+ methods: " + methodsHundredOrMore);
         System.out.println("Number of total Methods: " + methodParams);
+        
+        System.out.println("\nFIELD NUMBER TOTALS:");
+        System.out.println("Number of classes with 0 fields: " + fieldsZero);
+        System.out.println("Number of classes with 1 fields: " + fieldsOne);
+        System.out.println("Number of classes with 2 fields: " + fieldsTwo);
+        System.out.println("Number of classes with 3 fields: " + fieldsThree);
+        System.out.println("Number of classes with 4 fields: " + fieldsFour);
+        System.out.println("Number of classes with 5 fields: " + fieldsFive);
+        System.out.println("Number of classes with 6 fields: " + fieldsSix);
+        System.out.println("Number of classes with 7 fields: " + fieldsSeven);
+        System.out.println("Number of classes with 8 fields: " + fieldsEight);
+        System.out.println("Number of classes with 9 fields: " + fieldsNine);
+        System.out.println("Number of classes with 10+ fields: " + fieldsTenOrMore);
+        System.out.println("Number of classes with 100+ fields: " + fieldsHundredOrMore);
 
-        System.out.println("\nNUMBER OF ACCESS/MUT/CONST/STATIC/INST METHODS");
+        System.out.println("\nNUMBER OF ACCESS/MUT/CONST/STATIC/INST METHODS:");
         System.out.println("Number of accessors: " + numAccessors);
         System.out.println("Number of mutators: " + numMutators);
         System.out.println("Number of constructors: " + numConstructors);
@@ -1097,7 +1398,73 @@ public class CodeAnalysis {
         System.out.println("Number of lines in static methods: " + numStaticMethodsLines);
         System.out.println("Number of lines in instance methods: " + numInstanceMethodsLines);
 
-        System.out.println("\nMEMBER PERMISSION COUNT");
+        System.out.println("\nNUMBER OF LINES IN CONSTRUCTORS");
+        System.out.println("Number of constructors with 0 lines: " + constructorsLinesZero);
+        System.out.println("Number of constructors with 1 lines: " + constructorsLinesOne);
+        System.out.println("Number of constructors with 2 lines: " + constructorsLinesTwo);
+        System.out.println("Number of constructors with 3 lines: " + constructorsLinesThree);
+        System.out.println("Number of constructors with 4 lines: " + constructorsLinesFour);
+        System.out.println("Number of constructors with 5 lines: " + constructorsLinesFive);
+        System.out.println("Number of constructors with 6 lines: " + constructorsLinesSix);
+        System.out.println("Number of constructors with 7 lines: " + constructorsLinesSeven);
+        System.out.println("Number of constructors with 8 lines: " + constructorsLinesEight);
+        System.out.println("Number of constructors with 9 lines: " + constructorsLinesNine);
+        System.out.println("Number of constructors with 10+ lines: " + constructorsLinesTenOrMore);
+        
+        System.out.println("\nNUMBER OF LINES IN ACCESSORS");
+        System.out.println("Number of accessors with 0 lines: " + accessorsLinesZero);
+        System.out.println("Number of accessors with 1 lines: " + accessorsLinesOne);
+        System.out.println("Number of accessors with 2 lines: " + accessorsLinesTwo);
+        System.out.println("Number of accessors with 3 lines: " + accessorsLinesThree);
+        System.out.println("Number of accessors with 4 lines: " + accessorsLinesFour);
+        System.out.println("Number of accessors with 5 lines: " + accessorsLinesFive);
+        System.out.println("Number of accessors with 6 lines: " + accessorsLinesSix);
+        System.out.println("Number of accessors with 7 lines: " + accessorsLinesSeven);
+        System.out.println("Number of accessors with 8 lines: " + accessorsLinesEight);
+        System.out.println("Number of accessors with 9 lines: " + accessorsLinesNine);
+        System.out.println("Number of accessors with 10+ lines: " + accessorsLinesTenOrMore);
+        
+        System.out.println("\nNUMBER OF LINES IN MUTATORS");
+        System.out.println("Number of mutators with 0 lines: " + mutatorsLinesZero);
+        System.out.println("Number of mutators with 1 lines: " + mutatorsLinesOne);
+        System.out.println("Number of mutators with 2 lines: " + mutatorsLinesTwo);
+        System.out.println("Number of mutators with 3 lines: " + mutatorsLinesThree);
+        System.out.println("Number of mutators with 4 lines: " + mutatorsLinesFour);
+        System.out.println("Number of mutators with 5 lines: " + mutatorsLinesFive);
+        System.out.println("Number of mutators with 6 lines: " + mutatorsLinesSix);
+        System.out.println("Number of mutators with 7 lines: " + mutatorsLinesSeven);
+        System.out.println("Number of mutators with 8 lines: " + mutatorsLinesEight);
+        System.out.println("Number of mutators with 9 lines: " + mutatorsLinesNine);
+        System.out.println("Number of mutators with 10+ lines: " + mutatorsLinesTenOrMore);
+        
+        System.out.println("\nNUMBER OF LINES IN STATIC METHODS");
+        System.out.println("Number of static methods with 0 lines: " + staticMethodsLinesZero);
+        System.out.println("Number of static methods with 1 lines: " + staticMethodsLinesOne);
+        System.out.println("Number of static methods with 2 lines: " + staticMethodsLinesTwo);
+        System.out.println("Number of static methods with 3 lines: " + staticMethodsLinesThree);
+        System.out.println("Number of static methods with 4 lines: " + staticMethodsLinesFour);
+        System.out.println("Number of static methods with 5 lines: " + staticMethodsLinesFive);
+        System.out.println("Number of static methods with 6 lines: " + staticMethodsLinesSix);
+        System.out.println("Number of static methods with 7 lines: " + staticMethodsLinesSeven);
+        System.out.println("Number of static methods with 8 lines: " + staticMethodsLinesEight);
+        System.out.println("Number of static methods with 9 lines: " + staticMethodsLinesNine);
+        System.out.println("Number of static methods with 10+ lines: " + staticMethodsLinesTenOrMore);
+        
+        System.out.println("\nNUMBER OF LINES IN INSTANCE METHODS");
+        System.out.println("Number of instance methods with 0 lines: " + instanceMethodsLinesZero);
+        System.out.println("Number of instance methods with 1 lines: " + instanceMethodsLinesOne);
+        System.out.println("Number of instance methods with 2 lines: " + instanceMethodsLinesTwo);
+        System.out.println("Number of instance methods with 3 lines: " + instanceMethodsLinesThree);
+        System.out.println("Number of instance methods with 4 lines: " + instanceMethodsLinesFour);
+        System.out.println("Number of instance methods with 5 lines: " + instanceMethodsLinesFive);
+        System.out.println("Number of instance methods with 6 lines: " + instanceMethodsLinesSix);
+        System.out.println("Number of instance methods with 7 lines: " + instanceMethodsLinesSeven);
+        System.out.println("Number of instance methods with 8 lines: " + instanceMethodsLinesEight);
+        System.out.println("Number of instance methods with 9 lines: " + instanceMethodsLinesNine);
+        System.out.println("Number of instance methods with 10+ lines: " + instanceMethodsLinesTenOrMore);
+        
+
+        System.out.println("\nMEMBER PERMISSION COUNT:");
         System.out.println("Number of public fields: " + numPublicPermissionField);
         System.out.println("Number of protected fields: " + numProtectedPermissionField);
         System.out.println("Number of private fields: " + numPrivatePermissionField);
@@ -1107,32 +1474,32 @@ public class CodeAnalysis {
         System.out.println("Number of private methods: " + numPrivatePermissionMethod);
         System.out.println("Number of default methods: " + numDefaultPermissionMethod);
 
-        System.out.println("\nNUMBER OF MEMBERS IN CLASS");
+        System.out.println("\nNUMBER OF MEMBERS IN CLASS:");
         System.out.println("Number of fields: " + numFieldsMember);
         System.out.println("Number of methods: " + numMethodsMember);
         System.out.println("Total number of members: " + (numFieldsMember + numMethodsMember));
         
-        System.out.println("\nNUMBER OF INHERITED CLASSES");
+        System.out.println("\nNUMBER OF INHERITED CLASSES:");
         System.out.println("Number of classes: " + classCounter);
         System.out.println("Number of classes that use inheritance: " + inheritanceCounter);
-        System.out.println("Number of classes that are interfaces: " + interfaceCounter);
+        System.out.println("Number of classes that use interfaces: " + interfaceCounter);
         System.out.println("Number of classes that use both: " + inheritanceAndInterfaceCounter);
 
-        System.out.println("\nNUMBER OF RECURSIVE + NON-RECURSIVE CALLS");
+        System.out.println("\nNUMBER OF RECURSIVE + NON-RECURSIVE CALLS:");
         System.out.println("Number of recursive calls: " + globalRecursiveCount);
         System.out.println("Number of non-recursive calls: " + globalNonRecursiveCount);
 
-        System.out.println("\nNUMBER OF EXCEPTIONS THROWN");
+        System.out.println("\nNUMBER OF EXCEPTIONS THROWN:");
         System.out.println("Custom exceptions thrown: " + customExceptionsThrown);
         System.out.println("JRE exceptions thrown: " + jreExceptionsThrown);
         System.out.println("Generic exceptions thrown: " + genericExceptionsThrown);
         
-        System.out.println("\nNUMBER OF EXCEPTIONS CAUGHT");
+        System.out.println("\nNUMBER OF EXCEPTIONS CAUGHT:");
         System.out.println("Number of methods with generic exceptions caught: " + genericExceptionCaughtCount);
         System.out.println("Number of methods with JRE-defined exceptions caught: " + jreExceptionCaughtCount);
         System.out.println("Number of methods with custom exceptions caught: " + customExceptionCaughtCount);
         
-        System.out.println("\nTOTAL LINE COUNT");
+        System.out.println("\nTOTAL LINE COUNT:");
         System.out.println("Lines read: " + globallineCount);
     }
 }
