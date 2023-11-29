@@ -559,31 +559,6 @@ public class CodeAnalysis {
         }).explore(pathDir);
     }
 
-    /*
-     * Raw counts and distributions of number of parameters a method requires
-     * */
-    public static void memberCount (File pathDir) throws Exception {
-        new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
-            //System.out.println("\n" + path);
-
-                // Parse the source code file
-                CompilationUnit cu = StaticJavaParser.parse(file);
-
-                // Count the number of members in the class
-                int numFields = cu.findAll(FieldDeclaration.class).size();
-                int numMethods = cu.findAll(MethodDeclaration.class).size();
-
-                numFieldsMember += numFields;
-                numMethodsMember += numMethods;
-
-                // Print the results
-                /*System.out.println("Number of fields: " + numFieldsMember);
-                System.out.println("Number of methods: " + numMethodsMember);
-                System.out.println("Total number of members: " + (numFieldsMember + numMethodsMember));*/
-    	
-        }).explore(pathDir);
-    }
-
     // Count the number of lines in each method
     static int numAccessorsLines = 0;
     static int numMutatorsLines = 0;
