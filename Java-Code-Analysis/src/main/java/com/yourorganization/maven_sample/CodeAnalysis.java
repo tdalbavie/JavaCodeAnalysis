@@ -674,7 +674,7 @@ public class CodeAnalysis {
                     String methodName = md.getNameAsString();
 
                     //if the name starts with get[Something], has no parameters, and isn't a void type, it's a getter/accessor
-                    boolean isAccessor = Pattern.matches("^get[A-Z].*", methodName) && md.getParameters().isEmpty() && !md.getType().isVoidType();
+                    boolean isAccessor = (Pattern.matches("^get[A-Z].*", methodName) || Pattern.matches("^is[A-Z].*", methodName)) && md.getParameters().isEmpty() && !md.getType().isVoidType();
 
                     //if the name starts with set[Something], has one parameter, and is a void type, its a setter/mutator
                     boolean isMutator = Pattern.matches("^set[A-Z].*", methodName) && md.getParameters().size() == 1 && md.getType().isVoidType();
@@ -1495,9 +1495,9 @@ public class CodeAnalysis {
         System.out.println("Generic exceptions thrown: " + genericExceptionsThrown);
         
         System.out.println("\nNUMBER OF EXCEPTIONS CAUGHT:");
-        System.out.println("Number of methods with generic exceptions caught: " + genericExceptionCaughtCount);
-        System.out.println("Number of methods with JRE-defined exceptions caught: " + jreExceptionCaughtCount);
-        System.out.println("Number of methods with custom exceptions caught: " + customExceptionCaughtCount);
+        System.out.println("Generic exceptions caught: " + genericExceptionCaughtCount);
+        System.out.println("JRE-defined exceptions caught: " + jreExceptionCaughtCount);
+        System.out.println("Custom exceptions caught: " + customExceptionCaughtCount);
         
         System.out.println("\nTOTAL LINE COUNT:");
         System.out.println("Lines read: " + globallineCount);
