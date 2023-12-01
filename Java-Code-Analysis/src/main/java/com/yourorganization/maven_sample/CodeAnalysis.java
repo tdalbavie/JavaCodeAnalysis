@@ -558,7 +558,32 @@ public class CodeAnalysis {
 
         }).explore(pathDir);
     }
+    
+    /*
+     * Raw counts and distributions of number of parameters a method requires
+     * */
+    public static void memberCount (File pathDir) throws Exception {
+        new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
+            //System.out.println("\n" + path);
 
+                // Parse the source code file
+                CompilationUnit cu = StaticJavaParser.parse(file);
+
+                // Count the number of members in the class
+                int numFields = cu.findAll(FieldDeclaration.class).size();
+                int numMethods = cu.findAll(MethodDeclaration.class).size();
+
+                numFieldsMember += numFields;
+                numMethodsMember += numMethods;
+
+                // Print the results
+                /*System.out.println("Number of fields: " + numFieldsMember);
+                System.out.println("Number of methods: " + numMethodsMember);
+                System.out.println("Total number of members: " + (numFieldsMember + numMethodsMember));*/
+
+        }).explore(pathDir);
+    }
+    
     // Count the number of lines in each method
     static int numAccessorsLines = 0;
     static int numMutatorsLines = 0;
@@ -859,37 +884,26 @@ public class CodeAnalysis {
                         //System.out.println("Number of methods: " + classDecl.getMethods().size());
                         if (classDecl.getMethods().isEmpty()) {
                             methodsZero++;
-                            numMethodsMember++;
                         } else if (numMethds == 1) {
                             methodsOne++;
-                            numMethodsMember++;
                         } else if (numMethds == 2) {
                             methodsTwo++;
-                            numMethodsMember++;
                         } else if (numMethds == 3) {
                             methodsThree++;
-                            numMethodsMember++;
                         } else if (numMethds == 4) {
                             methodsFour++;
-                            numMethodsMember++;
                         } else if (numMethds == 5) {
                             methodsFive++;
-                            numMethodsMember++;
                         } else if (numMethds == 6) {
                             methodsSix++;
-                            numMethodsMember++;
                         } else if (numMethds == 7) {
                             methodsSeven++;
-                            numMethodsMember++;
                         } else if (numMethds == 8) {
                             methodsEight++;
-                            numMethodsMember++;
                         } else if (numMethds == 9) {
                             methodsNine++;
-                            numMethodsMember++;
                         } else if (numMethds >= 10) {
                             methodsTenOrMore++;
-                            numMethodsMember++;
                         }
                         
                         if (numMethds >= 100) {
@@ -931,37 +945,26 @@ public class CodeAnalysis {
                         //System.out.println("Number of methods: " + classDecl.getMethods().size());
                         if (classDecl.getFields().isEmpty()) {
                         	fieldsZero++;
-                        	numFieldsMember++;
                         } else if (numFields == 1) {
                         	fieldsOne++;
-                        	numFieldsMember++;
                         } else if (numFields == 2) {
                         	fieldsTwo++;
-                        	numFieldsMember++;
                         } else if (numFields == 3) {
                         	fieldsThree++;
-                        	numFieldsMember++;
                         } else if (numFields == 4) {
                         	fieldsFour++;
-                        	numFieldsMember++;
                         } else if (numFields == 5) {
                         	fieldsFive++;
-                        	numFieldsMember++;
                         } else if (numFields == 6) {
                         	fieldsSix++;
-                        	numFieldsMember++;
                         } else if (numFields == 7) {
                         	fieldsSeven++;
-                        	numFieldsMember++;
                         } else if (numFields == 8) {
                         	fieldsEight++;
-                        	numFieldsMember++;
                         } else if (numFields == 9) {
                         	fieldsNine++;
-                        	numFieldsMember++;
                         } else if (numFields >= 10) {
                         	fieldsTenOrMore++;
-                        	numFieldsMember++;
                         }
                         
                         if (numFields >= 100) {
@@ -1254,6 +1257,7 @@ public class CodeAnalysis {
 	                fieldCount(newDir);
 	                parameterCount(newDir);
 	                methodLineCount(newDir);
+	                memberCount(newDir);
 	                memberPermissionCount(newDir);
 	                methodCallCount(newDir);
 	                exceptionThrownCount(newDir);
